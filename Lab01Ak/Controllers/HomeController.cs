@@ -1,6 +1,8 @@
 using Lab01Ak.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
+using System.Net.Sockets;
+using System.Runtime.InteropServices;
 
 namespace LaboratoriumASPNET.Controllers
 {
@@ -27,8 +29,11 @@ namespace LaboratoriumASPNET.Controllers
         {
             return View();
         }
-
-        public IActionResult Calculator(string op, double? a, double? b)
+        public enum Operator
+        {
+            Unknown, Add, Mul, Sub, Div
+        }
+        public IActionResult Calculator(Operator op, double? a, double? b)
         {
             if (a is null || b is null)
             {
@@ -36,7 +41,7 @@ namespace LaboratoriumASPNET.Controllers
                 return View("CustomError");
             }
             //dodaj obsluge bledu dla op jesli jest inny od add, syb, mul, div
-            if (op != "add" && op != "sub" && op != "mul" && op != "div")
+            if (op != Operator.Add && op != Operator.Sub && op != Operator.Mul && op != Operator.Div)
             {
                 ViewBag.ErrorMessage2 = "Niepoprawy format op";
                 return View("CustomError02");
@@ -47,19 +52,19 @@ namespace LaboratoriumASPNET.Controllers
             ViewBag.b = b;
             switch (op)
             {
-                case "add":
+                case Operator.Add:
                     ViewBag.result = a + b;
                     ViewBag.op = "+";
                     break;
-                case "sub":
+                case Operator.Sub:
                     ViewBag.result = a - b;
                     ViewBag.op = "-";
                     break;
-                case "mul":
+                case Operator.Mul:
                     ViewBag.result = a * b;
                     ViewBag.op = "*";
                     break;
-                case "div":
+                case Operator.Div:
                     ViewBag.result = a / b;
                     ViewBag.op = "/";
                     break;
